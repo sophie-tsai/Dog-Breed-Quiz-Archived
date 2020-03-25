@@ -1,16 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import "./style.css";
+import App from "./app";
 
-class App extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1>Hello World! </h1>
-        <h2>love my dog</h2>
-      </div>
-    );
-  }
-}
-
-ReactDOM.render(<App />, document.getElementById("app"));
+ReactDOM.render(<App />, document.querySelector("#root"));
