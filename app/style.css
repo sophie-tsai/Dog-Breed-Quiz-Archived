@@ -1,15 +1,42 @@
 body {
-  background: white;
+  background-image: url("./background.jpg");
   font-family: "Roboto", sans-serif;
+  padding: 15px 15px 50px 15px;
 }
 
 .title {
   text-align: center;
-  font-family: "Barriecito", cursive;
+  font-family: "Special Elite", cursive;
+  padding-top: 20px;
+}
+
+.whiteDiv {
+  background-color: white;
+  width: 50%;
+  margin: auto;
+  border-radius: 15px;
+  padding-bottom: 25px;
 }
 
 .dogImage {
   display: block;
-  margin: 0 auto;
+  margin: auto;
   max-height: 500px;
+  border-radius: 15px;
+}
+
+.multipleChoice {
+  border-radius: 15px;
+  background-color: white;
+  color: black;
+  border: 5px solid black;
+  text-align: center;
+  margin: auto;
+  width: 40%;
+  padding: 5px;
+}
+
+#signature {
+  text-align: center;
+  z-index: -1;
 }
