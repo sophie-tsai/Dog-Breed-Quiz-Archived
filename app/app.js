@@ -1,16 +1,99 @@
 import React from "react";
-import AnswerChoice from "./AnswerChoice";
 import breeds from "./breedsData";
+import AnswerContainer from "./AnswerContainer";
 
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
       image: "",
-      breed: ""
+      breed: "",
+      err: "",
+      multipleChoiceAnswers: []
     };
+
     this.handleNameSwap = this.handleNameSwap.bind(this);
     this.retrieveBreedName = this.retrieveBreedName.bind(this);
+    this.error = this.error.bind(this);
+    this.fetchDoggo = this.fetchDoggo.bind(this);
+    this.configureBreedNames = this.configureBreedNames.bind(this);
+    this.createMultiChoiceAnswers = this.createMultiChoiceAnswers.bind(this);
+    this.getRandomDog = this.getRandomDog.bind(this);
+    this.populateMultipleChoices = this.populateMultipleChoices.bind(this);
+    this.shuffleChoices = this.shuffleChoices.bind(this);
+    //member variable
+    this.fullBreedNames = this.configureBreedNames(breeds);
+  }
+
+  componentDidMount() {
+    this.fetchDoggo();
+  }
+
+  configureBreedNames(breeds) {
+    const keyBreeds = Object.keys(breeds);
+    const fullBreedNameArr = [];
+
+    keyBreeds.forEach(props => {
+      const subBreedNames = breeds[props];
+      let propName = props;
+      if (subBreedNames.length >= 1) {
+        subBreedNames.forEach(name =>
+          fullBreedNameArr.push(`${name} ${propName}`)
+        );
+      } else {
+        fullBreedNameArr.push(props);
+      }
+    });
+    return fullBreedNameArr;
+  }
+
+  getRandomDog(fullBreedNameArr) {
+    const chooseRandomDog =
+      fullBreedNameArr[Math.floor(Math.random() * fullBreedNameArr.length)];
+    return chooseRandomDog;
+  }
+
+  populateMultipleChoices() {
+    const wrongAnswers = [];
+    while (wrongAnswers.length <= 2) {
+      let randomDogBreed = this.getRandomDog(this.fullBreedNames);
+      if (!wrongAnswers.includes(randomDogBreed)) {
+        wrongAnswers.push(randomDogBreed);
+      }
+    }
+    return wrongAnswers;
+  }
+
+  createMultiChoiceAnswers() {
+    const multipleChoices = this.populateMultipleChoices();
+    multipleChoices.push(this.state.breed);
+    this.setState({
+      multipleChoiceAnswers: multipleChoices
+    });
+  }
+
+  fetchDoggo() {
+    const dogData = fetch("https://dog.ceo/api/breeds/image/random");
+    dogData
+      .then(response => response.json())
+      .then(data => {
+        let breedName = this.retrieveBreedName(data);
+        breedName = this.handleNameSwap(breedName);
+        this.setState({
+          image: data.message,
+          breed: breedName
+        });
+        this.createMultiChoiceAnswers();
+      });
+    dogData.catch(this.error);
+  }
+
+  shuffleChoices(array) {
+    const randomIndex = Math.floor(Math.random() * 4);
+    const temp = array[3];
+    array[3] = array[randomIndex];
+    array[randomIndex] = temp;
+    return array;
   }
 
   handleNameSwap(breedName) {
@@ -34,19 +117,8 @@ class App extends React.Component {
     return breedName;
   }
 
-  //TODO: add .catch
-  componentDidMount() {
-    const dogData = fetch("https://dog.ceo/api/breeds/image/random");
-    dogData
-      .then(response => response.json())
-      .then(data => {
-        let breedName = this.retrieveBreedName(data);
-        breedName = this.handleNameSwap(breedName);
-        this.setState({
-          breed: breedName,
-          image: data.message
-        });
-      });
+  error() {
+    this.setState({ err: "Oops, something went wrong! :-(" });
   }
 
   render() {
@@ -56,10 +128,10 @@ class App extends React.Component {
           <h1 className="title">
             So You Think You Know <br /> Dog Breeds?{" "}
           </h1>
-          <br />
+          {this.state.err.length !== 0 ? <p>{this.state.err}</p> : null}
           <img className="dogImage" src={this.state.image} />
         </div>
-        <AnswerChoice correctAnswer={this.state.breed} />
+        <AnswerContainer data={this.state.multipleChoiceAnswers} />
       </div>
     );
   }

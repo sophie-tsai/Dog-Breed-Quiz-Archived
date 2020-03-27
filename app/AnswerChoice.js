@@ -1,11 +1,11 @@
 import React from "react";
 
-function AnswerChoice(props) {
+function AnswerChoices(props) {
   return (
-    <div>
-      <h1 className="multipleChoice">{props.correctAnswer}</h1>
+    <div className="text-center">
+      <button className="multipleChoice">{props.multiChoiceAnswer}</button>
     </div>
   );
 }
 
-export default AnswerChoice;
+export default AnswerChoices;
