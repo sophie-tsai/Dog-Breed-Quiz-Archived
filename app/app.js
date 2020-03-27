@@ -1,5 +1,6 @@
 import React from "react";
 import AnswerChoice from "./AnswerChoice";
+import breeds from "./breedsData";
 
 class App extends React.Component {
   constructor() {
@@ -9,10 +10,10 @@ class App extends React.Component {
       breed: ""
     };
     this.handleNameSwap = this.handleNameSwap.bind(this);
+    this.retrieveBreedName = this.retrieveBreedName.bind(this);
   }
 
   handleNameSwap(breedName) {
-    console.log(breedName);
     if (breedName.includes("-")) {
       const breedNameSwapped = breedName.split("-");
       let a = breedNameSwapped[0];
@@ -23,17 +24,23 @@ class App extends React.Component {
     return breedName;
   }
 
+  retrieveBreedName(data) {
+    const { message } = data;
+    const end = message.lastIndexOf("/");
+    let breedName = message
+      .split("")
+      .slice(30, end)
+      .join("");
+    return breedName;
+  }
+
+  //TODO: add .catch
   componentDidMount() {
     const dogData = fetch("https://dog.ceo/api/breeds/image/random");
     dogData
       .then(response => response.json())
       .then(data => {
-        const { message } = data;
-        const end = message.lastIndexOf("/");
-        let breedName = message
-          .split("")
-          .slice(30, end)
-          .join("");
+        let breedName = this.retrieveBreedName(data);
         breedName = this.handleNameSwap(breedName);
         this.setState({
           breed: breedName,

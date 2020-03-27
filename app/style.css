@@ -1,7 +1,7 @@
 body {
   background-image: url("./background.jpg");
   font-family: "Roboto", sans-serif;
-  padding: 15px 15px 50px 15px;
+  padding: 15px 15px 0px 15px;
 }
 
 .title {
@@ -12,7 +12,7 @@ body {
 
 .whiteDiv {
   background-color: white;
-  width: 50%;
+  max-width: 700px;
   margin: auto;
   border-radius: 15px;
   padding-bottom: 25px;
@@ -21,7 +21,7 @@ body {
 .dogImage {
   display: block;
   margin: auto;
-  max-height: 500px;
+  max-height: 400px;
   border-radius: 15px;
 }
 
@@ -37,6 +37,7 @@ body {
 }
 
 #signature {
+  margin-top: 30px;
   text-align: center;
   z-index: -1;
 }
