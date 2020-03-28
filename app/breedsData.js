@@ -123,35 +123,4 @@ const breeds = {
   wolfhound: ["irish"]
 };
 
-// const keyBreeds = Object.keys(breeds);
-// const fullBreedNames = [];
-
-// keyBreeds.forEach(props => {
-//   const subBreedNames = breeds[props];
-//   let propName = props;
-//   if (subBreedNames.length >= 1) {
-//     subBreedNames.forEach(name => fullBreedNames.push(`${name} ${propName}`));
-//   } else {
-//     fullBreedNames.push(props);
-//   }
-// });
-
-// function getRandomDog() {
-//   const chooseRandomDog =
-//     fullBreedNames[Math.floor(Math.random() * fullBreedNames.length)];
-//   return chooseRandomDog;
-// }
-// function populateMultipleChoices() {
-//   const wrongAnswers = [];
-//   while (wrongAnswers.length <= 2) {
-//     let randomDogBreed = getRandomDog();
-//     if (!wrongAnswers.includes(randomDogBreed)) {
-//       wrongAnswers.push(randomDogBreed);
-//     }
-//   }
-//   return wrongAnswers;
-// }
-
-// const multipleChoices = populateMultipleChoices();
-
 export default breeds;

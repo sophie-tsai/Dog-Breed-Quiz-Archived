@@ -12,18 +12,16 @@ class AnswerContainer extends React.Component {
     };
     this.handleChoice = this.handleChoice.bind(this);
     this.showAnswerResult = this.showAnswerResult.bind(this);
+    this.getUpdateMultipleChoiceAnswers = this.getUpdateMultipleChoiceAnswers.bind(
+      this
+    );
   }
 
-  // this is a native method called by react whenever the prop could change
-  //checks to see if the state from prop you're passing thru is changing
-  //if it is, update the state, if not, do nothing
+  // this method gets called before render and everytime the state changes / we get new props
   static getDerivedStateFromProps(props, state) {
     const { multipleChoiceAnswers, breed } = props.data;
     //in a static method we cannot use this keyword
-    if (
-      multipleChoiceAnswers !== state.multipleChoiceAnswers ||
-      breed !== state.breed
-    ) {
+    if (breed !== state.breed) {
       return {
         multipleChoiceAnswers: multipleChoiceAnswers,
         breed: breed
@@ -34,46 +32,46 @@ class AnswerContainer extends React.Component {
   }
 
   handleChoice(event, text) {
+    // So page doesn't refresh when button is pressed
     event.preventDefault();
-    text === this.state.breed
-      ? console.log("correct") //choice border turn green
-      : console.log("incorrect"); //choice border turn red
-    this.setState({ userSelectedAnswer: text });
-    // console.log(this.state.userSelectedAnswer);
-    this.showAnswerResult(this.state.userSelectedAnswer);
+    this.showAnswerResult(text);
+  }
+
+  getUpdateMultipleChoiceAnswers(selectedChoiceText) {
+    return this.state.multipleChoiceAnswers.map(multipleChoice => {
+      // If the selected one is the current element
+      if (selectedChoiceText === multipleChoice.breed) {
+        // IF what is selected is the correct answer
+        if (selectedChoiceText === this.state.breed) {
+          return {
+            borderColor: "green",
+            breed: selectedChoiceText
+          };
+        }
+
+        // If what is selected is incorrect answer
+        return {
+          borderColor: "red",
+          breed: selectedChoiceText
+        };
+      }
+
+      // No change for all others
+      return multipleChoice;
+    });
   }
 
   showAnswerResult(id) {
-    this.setState(prevState => {
-      const updatedColor = prevState.multipleChoiceAnswers.map(
-        multipleChoice => {
-          if (id === multipleChoice) {
-            if (id === this.breed) {
-              // console.log("green");
-              return {
-                borderColor: "green",
-                breed: id
-              };
-            }
-            return {
-              borderColor: "red",
-              breed: id
-            };
-          }
-
-          return multipleChoice;
-        }
-      );
-      return {
-        multipleChoiceAnswers: updatedColor
-      };
+    const updatedChoices = this.getUpdateMultipleChoiceAnswers(id);
+    this.setState({
+      multipleChoiceAnswers: updatedChoices,
+      userSelectedAnswer: id
     });
   }
 
   render() {
-    // console.log(this.state.multipleChoiceAnswers);
     const answerChoices = this.state.multipleChoiceAnswers.map(element => {
-      const { breed } = element;
+      const { breed, borderColor } = element;
 
       // console.log(element);
       // console.log(breed);
@@ -82,7 +80,7 @@ class AnswerContainer extends React.Component {
           className="col"
           key={Math.floor(Math.random() * 1000)}
           text={breed}
-          borderColor={this.props.borderColor}
+          borderColor={borderColor}
           handleChoice={this.handleChoice}
         />
       );

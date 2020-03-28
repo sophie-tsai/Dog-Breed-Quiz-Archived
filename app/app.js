@@ -17,7 +17,7 @@ class App extends React.Component {
     this.error = this.error.bind(this);
     this.fetchDoggo = this.fetchDoggo.bind(this);
     this.configureBreedNames = this.configureBreedNames.bind(this);
-    this.createMultiChoiceAnswers = this.createMultiChoiceAnswers.bind(this);
+    this.getMultiChoiceAnswers = this.getMultiChoiceAnswers.bind(this);
     this.getRandomDog = this.getRandomDog.bind(this);
     this.populateMultipleChoices = this.populateMultipleChoices.bind(this);
     this.shuffleChoices = this.shuffleChoices.bind(this);
@@ -64,13 +64,12 @@ class App extends React.Component {
     return wrongAnswers;
   }
 
-  createMultiChoiceAnswers() {
+  //TODO: fix bug where the same breed can show up twice
+  getMultiChoiceAnswers(breedValue) {
     const multipleChoices = this.populateMultipleChoices();
-    multipleChoices.push({ breed: this.state.breed });
+    multipleChoices.push({ breed: breedValue });
     this.shuffleChoices(multipleChoices);
-    this.setState({
-      multipleChoiceAnswers: multipleChoices
-    });
+    return multipleChoices;
   }
 
   fetchDoggo() {
@@ -78,13 +77,15 @@ class App extends React.Component {
     dogData
       .then(response => response.json())
       .then(data => {
+        // Breed work
         let breedName = this.retrieveBreedName(data);
         breedName = this.handleNameSwap(breedName);
+        const updatedChoices = this.getMultiChoiceAnswers(breedName);
         this.setState({
           image: data.message,
-          breed: breedName
+          breed: breedName,
+          multipleChoiceAnswers: updatedChoices
         });
-        this.createMultiChoiceAnswers();
       });
     dogData.catch(this.error);
   }
