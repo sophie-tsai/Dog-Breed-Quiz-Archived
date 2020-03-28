@@ -77,7 +77,6 @@ class AnswerContainer extends React.Component {
       // console.log(breed);
       return (
         <AnswerChoices
-          className="col"
           key={Math.floor(Math.random() * 1000)}
           text={breed}
           borderColor={borderColor}

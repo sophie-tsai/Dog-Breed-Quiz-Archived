@@ -53,21 +53,20 @@ class App extends React.Component {
     return { breed: chooseRandomDog };
   }
 
-  populateMultipleChoices() {
-    const wrongAnswers = [];
-    while (wrongAnswers.length <= 2) {
+  populateMultipleChoices(array) {
+    while (array.length <= 3) {
       let randomDogBreed = this.getRandomDog(this.fullBreedNames);
-      if (!wrongAnswers.includes(randomDogBreed)) {
-        wrongAnswers.push(randomDogBreed);
+      if (!array.includes(randomDogBreed)) {
+        array.push(randomDogBreed);
       }
     }
-    return wrongAnswers;
+    return array;
   }
 
-  //TODO: fix bug where the same breed can show up twice
   getMultiChoiceAnswers(breedValue) {
-    const multipleChoices = this.populateMultipleChoices();
+    let multipleChoices = [];
     multipleChoices.push({ breed: breedValue });
+    multipleChoices = this.populateMultipleChoices(multipleChoices);
     this.shuffleChoices(multipleChoices);
     return multipleChoices;
   }
@@ -130,16 +129,22 @@ class App extends React.Component {
           So You Think You Know <br /> Dog Breeds?
         </span>
         <br />
-        <div className="photoContainer">
-          {this.state.err.length !== 0 ? <p>{this.state.err}</p> : null}
-          <img className="dogImage" src={this.state.image} />
+        <div className="container-fluid mt-3">
+          <div className="row justify-content-center align-items-center">
+            <div className="col-lg-4">
+              {this.state.err.length !== 0 ? <p>{this.state.err}</p> : null}
+              <img className="dogImage" src={this.state.image} />
+            </div>
+            <div className="multipleChoiceContainer col-lg-3">
+              <AnswerContainer
+                data={{
+                  breed: this.state.breed,
+                  multipleChoiceAnswers: this.state.multipleChoiceAnswers
+                }}
+              />
+            </div>
+          </div>
         </div>
-        <AnswerContainer
-          data={{
-            breed: this.state.breed,
-            multipleChoiceAnswers: this.state.multipleChoiceAnswers
-          }}
-        />
       </div>
     );
   }
