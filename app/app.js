@@ -50,7 +50,7 @@ class App extends React.Component {
   getRandomDog(fullBreedNameArr) {
     const chooseRandomDog =
       fullBreedNameArr[Math.floor(Math.random() * fullBreedNameArr.length)];
-    return chooseRandomDog;
+    return { breed: chooseRandomDog };
   }
 
   populateMultipleChoices() {
@@ -66,7 +66,8 @@ class App extends React.Component {
 
   createMultiChoiceAnswers() {
     const multipleChoices = this.populateMultipleChoices();
-    multipleChoices.push(this.state.breed);
+    multipleChoices.push({ breed: this.state.breed });
+    this.shuffleChoices(multipleChoices);
     this.setState({
       multipleChoiceAnswers: multipleChoices
     });
@@ -89,9 +90,9 @@ class App extends React.Component {
   }
 
   shuffleChoices(array) {
-    const randomIndex = Math.floor(Math.random() * 4);
-    const temp = array[3];
-    array[3] = array[randomIndex];
+    const randomIndex = Math.floor(Math.random() * array.length);
+    const temp = array[array.length - 1];
+    array[array.length - 1] = array[randomIndex];
     array[randomIndex] = temp;
     return array;
   }
@@ -124,14 +125,20 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <div className="whiteDiv">
-          <h1 className="title">
-            So You Think You Know <br /> Dog Breeds?{" "}
-          </h1>
+        <span className="title">
+          So You Think You Know <br /> Dog Breeds?
+        </span>
+        <br />
+        <div className="photoContainer">
           {this.state.err.length !== 0 ? <p>{this.state.err}</p> : null}
           <img className="dogImage" src={this.state.image} />
         </div>
-        <AnswerContainer data={this.state.multipleChoiceAnswers} />
+        <AnswerContainer
+          data={{
+            breed: this.state.breed,
+            multipleChoiceAnswers: this.state.multipleChoiceAnswers
+          }}
+        />
       </div>
     );
   }
