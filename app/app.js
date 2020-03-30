@@ -1,6 +1,8 @@
 import React from "react";
-import breeds from "./breedsData";
+
 import AnswerContainer from "./AnswerContainer";
+import { FaArrowRight } from "react-icons/fa";
+import * as DogAPi from "./utils/dogApi";
 
 class App extends React.Component {
   constructor() {
@@ -9,66 +11,55 @@ class App extends React.Component {
       image: "",
       breed: "",
       err: "",
-      multipleChoiceAnswers: []
+      multipleChoiceAnswers: [],
+      score: 0,
+      questionNumber: 1
     };
 
-    this.handleNameSwap = this.handleNameSwap.bind(this);
-    this.retrieveBreedName = this.retrieveBreedName.bind(this);
     this.error = this.error.bind(this);
     this.fetchDoggo = this.fetchDoggo.bind(this);
-    this.configureBreedNames = this.configureBreedNames.bind(this);
+
     this.getMultiChoiceAnswers = this.getMultiChoiceAnswers.bind(this);
     this.getRandomDog = this.getRandomDog.bind(this);
-    this.populateMultipleChoices = this.populateMultipleChoices.bind(this);
-    this.shuffleChoices = this.shuffleChoices.bind(this);
+
+    this.handleArrowClick = this.handleArrowClick.bind(this);
     //member variable
-    this.fullBreedNames = this.configureBreedNames(breeds);
+    this.fullBreedNames = DogAPi.configureBreedNames();
   }
 
   componentDidMount() {
     this.fetchDoggo();
   }
 
-  configureBreedNames(breeds) {
-    const keyBreeds = Object.keys(breeds);
-    const fullBreedNameArr = [];
-
-    keyBreeds.forEach(props => {
-      const subBreedNames = breeds[props];
-      let propName = props;
-      if (subBreedNames.length >= 1) {
-        subBreedNames.forEach(name =>
-          fullBreedNameArr.push(`${name} ${propName}`)
-        );
-      } else {
-        fullBreedNameArr.push(props);
-      }
-    });
-    return fullBreedNameArr;
+  getRandomDog() {
+    const chooseRandomDog = this.fullBreedNames[
+      Math.floor(Math.random() * this.fullBreedNames.length)
+    ];
+    return chooseRandomDog;
   }
 
-  getRandomDog(fullBreedNameArr) {
-    const chooseRandomDog =
-      fullBreedNameArr[Math.floor(Math.random() * fullBreedNameArr.length)];
-    return { breed: chooseRandomDog };
-  }
+  getMultiChoiceAnswers(correctBreedName) {
+    // Add the correct breedName into the set
+    const multipleChoicesSet = new Set([correctBreedName]);
 
-  populateMultipleChoices(array) {
-    while (array.length <= 3) {
-      let randomDogBreed = this.getRandomDog(this.fullBreedNames);
-      if (!array.includes(randomDogBreed)) {
-        array.push(randomDogBreed);
-      }
+    // While the set is not equal to 4
+    while (multipleChoicesSet.size <= 3) {
+      let randomDogBreed = this.getRandomDog();
+
+      //  Add a random dog breed name, NOT dog object to the set
+      multipleChoicesSet.add(randomDogBreed);
     }
-    return array;
-  }
+    // If we exited while then we have 4 dog names in a set
 
-  getMultiChoiceAnswers(breedValue) {
-    let multipleChoices = [];
-    multipleChoices.push({ breed: breedValue });
-    multipleChoices = this.populateMultipleChoices(multipleChoices);
-    this.shuffleChoices(multipleChoices);
-    return multipleChoices;
+    // Convert set to array of dog objects
+    const multipleChoiceArray = Array.from(multipleChoicesSet);
+    const multipleChoiceArrayOfObjects = multipleChoiceArray.map(breedName => ({
+      breed: breedName
+    }));
+
+    // Shuffle
+    multipleChoiceArrayOfObjects.sort(() => 0.5 - Math.random());
+    return multipleChoiceArrayOfObjects;
   }
 
   fetchDoggo() {
@@ -77,45 +68,26 @@ class App extends React.Component {
       .then(response => response.json())
       .then(data => {
         // Breed work
-        let breedName = this.retrieveBreedName(data);
-        breedName = this.handleNameSwap(breedName);
-        const updatedChoices = this.getMultiChoiceAnswers(breedName);
+        let correctBreedName = DogAPi.retrieveBreedName(data);
+        correctBreedName = DogAPi.handleNameSwap(correctBreedName);
+        const updatedChoices = this.getMultiChoiceAnswers(correctBreedName);
         this.setState({
           image: data.message,
-          breed: breedName,
+          breed: correctBreedName,
           multipleChoiceAnswers: updatedChoices
         });
       });
     dogData.catch(this.error);
   }
 
-  shuffleChoices(array) {
-    const randomIndex = Math.floor(Math.random() * array.length);
-    const temp = array[array.length - 1];
-    array[array.length - 1] = array[randomIndex];
-    array[randomIndex] = temp;
-    return array;
-  }
-
-  handleNameSwap(breedName) {
-    if (breedName.includes("-")) {
-      const breedNameSwapped = breedName.split("-");
-      let a = breedNameSwapped[0];
-      let b = breedNameSwapped[1];
-      [a, b] = [b, a];
-      breedName = [a, b].join(" ");
+  handleArrowClick() {
+    event.preventDefault();
+    if (this.state.questionNumber <= 10) {
+      this.setState(prevState => {
+        this.state.questionNumber = prevState.questionNumber + 1;
+      });
+      this.fetchDoggo();
     }
-    return breedName;
-  }
-
-  retrieveBreedName(data) {
-    const { message } = data;
-    const end = message.lastIndexOf("/");
-    let breedName = message
-      .split("")
-      .slice(30, end)
-      .join("");
-    return breedName;
   }
 
   error() {
@@ -125,16 +97,17 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <span className="title">
-          So You Think You Know <br /> Dog Breeds?
-        </span>
+        <span className="title">So You Think You Know Dog Breeds?</span>
         <br />
+        <span className="score">{this.state.score}/10 </span>
+
         <div className="container-fluid mt-3">
           <div className="row justify-content-center align-items-center">
             <div className="col-lg-4">
               {this.state.err.length !== 0 ? <p>{this.state.err}</p> : null}
               <img className="dogImage" src={this.state.image} />
             </div>
+
             <div className="multipleChoiceContainer col-lg-3">
               <AnswerContainer
                 data={{
@@ -143,6 +116,9 @@ class App extends React.Component {
                 }}
               />
             </div>
+            <button className="arrow" onClick={this.handleArrowClick}>
+              <FaArrowRight />
+            </button>
           </div>
         </div>
       </div>

@@ -7,9 +7,9 @@ body {
 
 .title {
   text-align: center;
-  font-family: "Special Elite", cursive;
-  /* padding: 5px; */
-  font-size: 30px;
+  font-family: "Frijole", cursive;
+  padding: 5px;
+  font-size: 2rem;
   border-radius: 15px;
   background-color: white;
 }
@@ -21,6 +21,19 @@ body {
   margin: auto;
   border-radius: 15px;
   padding: 15px;
+}
+
+.score {
+  font-size: 1.25rem;
+}
+
+.arrow {
+  position: fixed;
+  right: 90px;
+  color: black;
+  border: 5px solid white;
+  background-color: white;
+  border-radius: 15px;
 }
 
 .dogImage {
@@ -41,7 +54,7 @@ body {
   margin: 5px 10px;
   /* width: 40%; */
   min-width: 300px;
-  padding: 3px;
+  padding: 5px;
   font-size: 20px;
 }
 

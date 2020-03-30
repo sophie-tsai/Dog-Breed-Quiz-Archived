@@ -92,39 +92,7 @@ class AnswerContainer extends React.Component {
       );
     });
 
-    return (
-      <div>{answerChoices}</div>
-      // <div className="container">
-      //   <div className="row justify-content-center">
-      //     <AnswerChoices
-      //       className="col"
-      //       key={0}
-      //       text={this.state.multipleChoiceAnswers[0]}
-      //       handleChoice={this.handleChoice}
-      //     />
-      //     <AnswerChoices
-      //       className="col"
-      //       key={1}
-      //       text={this.state.multipleChoiceAnswers[1]}
-      //       handleChoice={this.handleChoice}
-      //     />
-      //   </div>
-      //   <div className="row justify-content-center">
-      //     <AnswerChoices
-      //       className="col"
-      //       key={2}
-      //       text={this.state.multipleChoiceAnswers[2]}
-      //       handleChoice={this.handleChoice}
-      //     />
-      //     <AnswerChoices
-      //       className="col"
-      //       key={3}
-      //       text={this.state.multipleChoiceAnswers[3]}
-      //       handleChoice={this.handleChoice}
-      //     />
-      //   </div>
-      // </div>
-    );
+    return <div>{answerChoices}</div>;
   }
 }
 export default AnswerContainer;
