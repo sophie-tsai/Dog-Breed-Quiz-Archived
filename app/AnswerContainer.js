@@ -7,7 +7,8 @@ class AnswerContainer extends React.Component {
     this.state = {
       multipleChoiceAnswers: [],
       breed: "",
-      userSelectedAnswer: ""
+      userSelectedAnswer: "",
+      wasChoiceSelected: false
       // isCorrectAnswer: false
     };
     this.handleChoice = this.handleChoice.bind(this);
@@ -24,7 +25,8 @@ class AnswerContainer extends React.Component {
     if (breed !== state.breed) {
       return {
         multipleChoiceAnswers: multipleChoiceAnswers,
-        breed: breed
+        breed: breed,
+        wasChoiceSelected: false
       };
     }
     // Return null if the state hasn't changed
@@ -34,6 +36,10 @@ class AnswerContainer extends React.Component {
   handleChoice(event, text) {
     // So page doesn't refresh when button is pressed
     event.preventDefault();
+    //prevents the user from choosing an answer after they've chosen one
+    if (this.state.wasChoiceSelected) {
+      return;
+    }
     this.showAnswerResult(text);
   }
 
@@ -65,7 +71,8 @@ class AnswerContainer extends React.Component {
     const updatedChoices = this.getUpdateMultipleChoiceAnswers(id);
     this.setState({
       multipleChoiceAnswers: updatedChoices,
-      userSelectedAnswer: id
+      userSelectedAnswer: id,
+      wasChoiceSelected: true
     });
   }
 

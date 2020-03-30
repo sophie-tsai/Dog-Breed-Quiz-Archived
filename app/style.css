@@ -23,10 +23,6 @@ body {
   padding: 15px;
 }
 
-/* .contentsContainer {
-  background-color: blue;
-} */
-
 .dogImage {
   display: block;
   margin: auto;
@@ -34,13 +30,6 @@ body {
   border-radius: 15px;
   border: 20px solid #fff2df;
 }
-
-/* max-width: 280px; */
-
-/* .multipleChoiceContainer {
-  margin: auto;
-  
-} */
 
 .multipleChoice {
   border-radius: 15px;
