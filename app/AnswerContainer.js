@@ -16,6 +16,7 @@ class AnswerContainer extends React.Component {
     this.getUpdateMultipleChoiceAnswers = this.getUpdateMultipleChoiceAnswers.bind(
       this
     );
+    this.onAnswerCorrect = props.data.incrementScore;
   }
 
   // this method gets called before render and everytime the state changes / we get new props
@@ -49,6 +50,7 @@ class AnswerContainer extends React.Component {
       if (selectedChoiceText === multipleChoice.breed) {
         // IF what is selected is the correct answer
         if (selectedChoiceText === this.state.breed) {
+          this.onAnswerCorrect();
           return {
             borderColor: "green",
             breed: selectedChoiceText
@@ -84,7 +86,7 @@ class AnswerContainer extends React.Component {
       // console.log(breed);
       return (
         <AnswerChoices
-          key={Math.floor(Math.random() * 1000)}
+          key={breed}
           text={breed}
           borderColor={borderColor}
           handleChoice={this.handleChoice}

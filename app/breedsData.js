@@ -37,7 +37,7 @@ const breeds = {
   entlebucher: [],
   eskimo: [],
   frise: ["bichon"],
-  "german shepherd": [],
+  germanshepherd: [],
   greyhound: ["italian"],
   groenendael: [],
   havanese: [],
@@ -54,7 +54,7 @@ const breeds = {
   malinois: [],
   maltese: [],
   mastiff: ["bull", "english", "tibetan"],
-  "mexican hairless": [],
+  mexicanhairless: [],
   mix: [],
   mountain: ["bernese", "swiss"],
   newfoundland: [],
@@ -92,7 +92,7 @@ const breeds = {
     "welsh"
   ],
   springer: ["english"],
-  "st. bernard": [],
+  stbernard: [],
   terrier: [
     "american",
     "australian",

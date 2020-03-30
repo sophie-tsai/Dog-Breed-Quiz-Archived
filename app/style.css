@@ -27,9 +27,22 @@ body {
   font-size: 1.25rem;
 }
 
-.arrow {
+.contentContainer {
+  height: 60vh;
+}
+
+.arrowIcon {
   position: fixed;
   right: 90px;
+  color: black;
+  border: 5px solid white;
+  background-color: white;
+  border-radius: 15px;
+}
+
+.newIcon {
+  position: fixed;
+  left: 80px;
   color: black;
   border: 5px solid white;
   background-color: white;

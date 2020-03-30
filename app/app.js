@@ -2,6 +2,8 @@ import React from "react";
 
 import AnswerContainer from "./AnswerContainer";
 import { FaArrowRight } from "react-icons/fa";
+import { IconContext } from "react-icons";
+import { MdFiberNew } from "react-icons/md";
 import * as DogAPi from "./utils/dogApi";
 
 class App extends React.Component {
@@ -18,10 +20,10 @@ class App extends React.Component {
 
     this.error = this.error.bind(this);
     this.fetchDoggo = this.fetchDoggo.bind(this);
-
+    this.increment = this.increment.bind(this);
     this.getMultiChoiceAnswers = this.getMultiChoiceAnswers.bind(this);
     this.getRandomDog = this.getRandomDog.bind(this);
-
+    this.handleNewGame = this.handleNewGame.bind(this);
     this.handleArrowClick = this.handleArrowClick.bind(this);
     //member variable
     this.fullBreedNames = DogAPi.configureBreedNames();
@@ -82,12 +84,30 @@ class App extends React.Component {
 
   handleArrowClick() {
     event.preventDefault();
-    if (this.state.questionNumber <= 10) {
+    if (this.state.questionNumber <= 9) {
       this.setState(prevState => {
-        this.state.questionNumber = prevState.questionNumber + 1;
+        return {
+          questionNumber: prevState.questionNumber + 1
+        };
       });
       this.fetchDoggo();
     }
+  }
+
+  increment() {
+    this.setState(prevState => {
+      return {
+        score: prevState.score + 1
+      };
+    });
+  }
+
+  handleNewGame() {
+    this.setState({
+      questionNumber: 1,
+      score: 0
+    });
+    this.fetchDoggo();
   }
 
   error() {
@@ -99,10 +119,12 @@ class App extends React.Component {
       <div>
         <span className="title">So You Think You Know Dog Breeds?</span>
         <br />
-        <span className="score">{this.state.score}/10 </span>
+        <span className="score">
+          Score: {this.state.score} - Round {this.state.questionNumber}
+        </span>
 
         <div className="container-fluid mt-3">
-          <div className="row justify-content-center align-items-center">
+          <div className="row justify-content-center align-items-center contentContainer">
             <div className="col-lg-4">
               {this.state.err.length !== 0 ? <p>{this.state.err}</p> : null}
               <img className="dogImage" src={this.state.image} />
@@ -112,13 +134,22 @@ class App extends React.Component {
               <AnswerContainer
                 data={{
                   breed: this.state.breed,
-                  multipleChoiceAnswers: this.state.multipleChoiceAnswers
+                  multipleChoiceAnswers: this.state.multipleChoiceAnswers,
+                  incrementScore: this.increment
                 }}
               />
             </div>
-            <button className="arrow" onClick={this.handleArrowClick}>
-              <FaArrowRight />
+            <button className="arrowIcon" onClick={this.handleArrowClick}>
+              <IconContext.Provider value={{ size: "2em" }}>
+                <FaArrowRight />
+              </IconContext.Provider>
             </button>
+            <button className="newIcon" onClick={this.handleNewGame}>
+              <IconContext.Provider value={{ size: "2.5em" }}>
+                <MdFiberNew />
+              </IconContext.Provider>
+            </button>
+            <br />
           </div>
         </div>
       </div>
