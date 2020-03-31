@@ -19,67 +19,29 @@ class App extends React.Component {
     };
 
     this.error = this.error.bind(this);
-    this.fetchDoggo = this.fetchDoggo.bind(this);
     this.increment = this.increment.bind(this);
-    this.getMultiChoiceAnswers = this.getMultiChoiceAnswers.bind(this);
-    this.getRandomDog = this.getRandomDog.bind(this);
+    this.getDoggoData = this.getDoggoData.bind(this);
     this.handleNewGame = this.handleNewGame.bind(this);
     this.handleArrowClick = this.handleArrowClick.bind(this);
-    //member variable
-    this.fullBreedNames = DogAPi.configureBreedNames();
+  }
+
+  getDoggoData() {
+    const fetchDoggoPromise = DogAPi.fetchDoggo();
+
+    fetchDoggoPromise.then(data => {
+      const { correctBreedName, image, multipleChoiceAnswers } = data;
+      this.setState({
+        image: image,
+        breed: correctBreedName,
+        multipleChoiceAnswers: multipleChoiceAnswers
+      });
+    });
+
+    fetchDoggoPromise.catch(this.error);
   }
 
   componentDidMount() {
-    this.fetchDoggo();
-  }
-
-  getRandomDog() {
-    const chooseRandomDog = this.fullBreedNames[
-      Math.floor(Math.random() * this.fullBreedNames.length)
-    ];
-    return chooseRandomDog;
-  }
-
-  getMultiChoiceAnswers(correctBreedName) {
-    // Add the correct breedName into the set
-    const multipleChoicesSet = new Set([correctBreedName]);
-
-    // While the set is not equal to 4
-    while (multipleChoicesSet.size <= 3) {
-      let randomDogBreed = this.getRandomDog();
-
-      //  Add a random dog breed name, NOT dog object to the set
-      multipleChoicesSet.add(randomDogBreed);
-    }
-    // If we exited while then we have 4 dog names in a set
-
-    // Convert set to array of dog objects
-    const multipleChoiceArray = Array.from(multipleChoicesSet);
-    const multipleChoiceArrayOfObjects = multipleChoiceArray.map(breedName => ({
-      breed: breedName
-    }));
-
-    // Shuffle
-    multipleChoiceArrayOfObjects.sort(() => 0.5 - Math.random());
-    return multipleChoiceArrayOfObjects;
-  }
-
-  fetchDoggo() {
-    const dogData = fetch("https://dog.ceo/api/breeds/image/random");
-    dogData
-      .then(response => response.json())
-      .then(data => {
-        // Breed work
-        let correctBreedName = DogAPi.retrieveBreedName(data);
-        correctBreedName = DogAPi.handleNameSwap(correctBreedName);
-        const updatedChoices = this.getMultiChoiceAnswers(correctBreedName);
-        this.setState({
-          image: data.message,
-          breed: correctBreedName,
-          multipleChoiceAnswers: updatedChoices
-        });
-      });
-    dogData.catch(this.error);
+    this.getDoggoData();
   }
 
   handleArrowClick() {
@@ -90,7 +52,7 @@ class App extends React.Component {
           questionNumber: prevState.questionNumber + 1
         };
       });
-      this.fetchDoggo();
+      this.getDoggoData();
     }
   }
 
@@ -107,7 +69,7 @@ class App extends React.Component {
       questionNumber: 1,
       score: 0
     });
-    this.fetchDoggo();
+    this.getDoggoData();
   }
 
   error() {
